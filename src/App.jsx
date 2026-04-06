@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
-import { Plus, Trash2, CheckCircle, Circle, ClipboardList, AlertTriangle, X, Check, HelpCircle, Calendar, AlignLeft } from 'lucide-react';
-
-/**
- * Advanced Task Manager
- * Features:
- * - Detailed Task Form (Title, Date, Description)
- * - Floating Action Button (FAB)
- * - Confirmation Modals for Delete & Toggle
- * - Toast Notifications
- */
+import React, { useState, useEffect } from 'react';
+// Lucide icons import (Make sure to run: npm install lucide-react)
+import { 
+  Plus, Trash2, CheckCircle, Circle, ClipboardList, 
+  AlertTriangle, X, Check, HelpCircle, Calendar, AlignLeft 
+} from 'lucide-react';
 
 export default function App() {
-  // State for the list of tasks (objects with title, date, desc)
+  // --- 1. State Management ---
   const [tasks, setTasks] = useState([
     { 
       id: 1, 
@@ -22,7 +17,6 @@ export default function App() {
     }
   ]);
 
-  // States for form visibility and inputs
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -30,11 +24,11 @@ export default function App() {
     description: ""
   });
 
-  // Modals and Notification state
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [taskToToggle, setTaskToToggle] = useState(null);
   const [notification, setNotification] = useState(null);
 
+  // --- 2. Helper Functions ---
   const showNotification = (msg, type = "success") => {
     setNotification({ msg, type });
     setTimeout(() => setNotification(null), 3000);
@@ -81,6 +75,7 @@ export default function App() {
     }
   };
 
+  // --- 3. UI Render ---
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col items-center py-10 px-4 font-sans relative">
       
@@ -95,7 +90,7 @@ export default function App() {
         <p className="text-slate-500 font-medium">Your personal productivity hub</p>
       </div>
 
-      {/* Task List (Home Page) */}
+      {/* Task List */}
       <div className="w-full max-w-lg space-y-4 pb-24">
         {tasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
@@ -154,7 +149,7 @@ export default function App() {
         )}
       </div>
 
-      {/* Floating Action Button (Bottom Right) */}
+      {/* FAB - Floating Action Button */}
       <button 
         onClick={() => setShowForm(true)}
         className="fixed bottom-8 right-8 w-16 h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-2xl flex items-center justify-center transform transition-transform active:scale-90 z-20 group"
@@ -165,7 +160,7 @@ export default function App() {
       {/* ADD TASK FORM MODAL */}
       {showForm && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 z-50">
-          <div className="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+          <div className="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <h2 className="text-2xl font-bold text-slate-800">New Goal</h2>
               <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600 bg-white p-2 rounded-full shadow-sm">
@@ -224,7 +219,7 @@ export default function App() {
         </div>
       )}
 
-      {/* CONFIRMATION MODALS & TOAST (Kept from previous version) */}
+      {/* CONFIRMATION MODALS */}
       {taskToToggle && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-xs p-6 text-center">
@@ -245,7 +240,7 @@ export default function App() {
 
       {taskToDelete && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-xs p-6 text-center animate-in zoom-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-xs p-6 text-center">
             <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Trash2 size={32} />
             </div>
@@ -259,8 +254,9 @@ export default function App() {
         </div>
       )}
 
+      {/* TOAST NOTIFICATION */}
       {notification && (
-        <div className={`fixed bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-3 rounded-2xl shadow-2xl transition-all animate-in fade-in slide-in-from-bottom-4 z-[100] ${
+        <div className={`fixed bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-3 rounded-2xl shadow-2xl z-[100] ${
           notification.type === 'error' ? 'bg-red-600 text-white' : 
           notification.type === 'info' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-white'
         }`}>
